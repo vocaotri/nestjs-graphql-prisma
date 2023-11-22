@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+    db:
+        container_name: '${APP_NAME}-db'
+        restart: always
+        environment:
+            POSTGRES_USER: '${DB_USER}'
+            POSTGRES_PASSWORD: '${DB_USER_PASSWORD}'
+            PGDATA: /data/postgres
+        image: postgres
+        ports:
+            - '${DB_PORT}:5432'
+        volumes:
+            - ./db_volume:/data/postgres
+    app:
+        container_name: "${APP_NAME}-api"
+        restart: always
+        build:
+            context: .
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        # mount only src folder
+        volumes:
+            - ./src:/usr/app/src
+            - ./libs:/usr/app/libs
+            - ./package.json:/usr/app/package.json
+            - ./prisma:/usr/app/prisma
+        command: >
+          bash -c "(nohup npx prisma studio &) && npm run start:debug"
+        ports:
+            - '${PORT}:3000'
+            - 9229:9229
+            - 5555:5555
+networks:
+    default:
+        name: '${NETWORK_NAME}'
