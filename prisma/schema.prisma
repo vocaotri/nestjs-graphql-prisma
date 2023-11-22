@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator nestgraphql {
+  provider               = "node node_modules/prisma-nestjs-graphql"
+  // for yarn monorepos
+  // provider = "prisma-nestjs-graphql"
+  output                 = "../src/@generated"
+  fields_Validator_from  = "class-validator"
+  fields_Validator_input = true
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  /// @Validator.IsEmail()
+  email      String   @unique
+  /// @Validator.MaxLength(25)
+  firstName  String
+  /// @Validator.MaxLength(25)
+  lastName   String
+  /// @Validator.MaxLength(25)
+  middleName String?
+  fullName   String?
+  /// @HideField()
+  password   String
+  role       Role     @default(user)
+  posts      Post[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  /// @Validator.MinLength(3)
+  /// @Validator.MaxLength(15)
+  title     String
+  /// @Validator.MaxLength(2000)
+  content   String?
+  published Boolean?  @default(false)
+  author    User?     @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  deletedAt DateTime?
+}
+
+enum Role {
+  user
+  admin
+}

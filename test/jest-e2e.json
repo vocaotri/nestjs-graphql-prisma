@@ -1,0 +1,21 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "y/library/(.*)": "<rootDir>/../libs/library/src/$1",
+    "y/library": "<rootDir>/../libs/library/src",
+    "y/auth/(.*)": "<rootDir>/../libs/auth/src/$1",
+    "y/auth": "<rootDir>/../libs/auth/src",
+    "y/permissions/(.*)": "<rootDir>/../libs/permissions/src/$1",
+    "y/permissions": "<rootDir>/../libs/permissions/src"
+  }
+}
